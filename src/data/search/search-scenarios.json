@@ -1,0 +1,21 @@
+{
+  "scenarios": [
+    {
+      "id": "T1001",
+      "description": "Verify user can enter text into the search field",
+      "searchInput": "jaanu"
+    },
+    {
+      "id": "T1003",
+      "description": "Search for valid content returns results",
+      "searchContent": "jaanu",
+      "searchInput": "jaanu"
+    },
+    {
+      "id": "T1004",
+      "description": "No search results found",
+      "searchContent": "xxxdz",
+      "searchInput": "xxxdz"
+    }
+  ]
+}

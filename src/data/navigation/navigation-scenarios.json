@@ -1,0 +1,21 @@
+{
+  "scenarios": [
+    {
+      "id": "TC_01",
+      "description": "Verify search navigation",
+      "expectedUrl": "/search"
+
+    },
+    {
+      "id": "TC_02",
+      "description": "Verify login navigation",
+      "expectedUrl": "/tv"
+    },
+    {
+     "id": "TC_03",
+     "description": "Verify user can enter text into search field",
+  "expectedUrl": "/search",
+  "searchContent": "Maharani"
+}
+   ]
+}

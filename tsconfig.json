@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "strict": true,
+    "types": ["node"],
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@ViMovies/pageObjects/*": ["src/pageObjects/*"],
+      "@ViMovies/commonFunctions/*": ["src/commonFunctions/*"],
+      "@ViMovies/data/*": ["src/data/*"],
+      "@utils/*": ["utils/*"],
+      "@tests/*": ["src/tests/*"]
+    },
+    "outDir": "dist"
+  },
+  "include": [
+    "src/**/*.ts",
+    "utils/**/*.ts",
+    "playwright.config.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "allure-results",
+    "allure-report",
+    "test-results",
+    "playwright-report"
+  ]
+}

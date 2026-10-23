@@ -1,0 +1,10 @@
+{
+  "scenarios": [
+    {
+      "id": "TC_017",
+      "description": "Verify the functionality of Search history post searching any content",
+      "searchText": "jan",
+      "expectedHistoryKeyword": "jan"
+    }
+  ]
+}
