@@ -56,7 +56,7 @@ export class HomePage {
     this.homeTab = page.getByRole('button', { name: 'Home' });
     this.landingTabMenu = page
       .getByRole('button', { name: 'Home', exact: true })
-      .locator('xpath=ancestor::*[.//button[normalize-space()="Sports"] and .//button[normalize-space()="Movies"] and .//button[normalize-space()="FREE OTTs"] and .//button[normalize-space()="Web Series"]][1]');
+      .locator('xpath=ancestor::*[.//button[normalize-space()="Sports"] and .//button[normalize-space()="Movies"] and .//button[normalize-space()="FREE"] and .//button[normalize-space()="Web Series"]][1]');
     this.featureCarousel = page.locator('.slick-slider:visible').filter({ has: page.locator('.slider_image:visible') }).first();
     this.featureCarouselSlides = this.featureCarousel.locator('.slick-slide:not(.slick-cloned):visible').filter({ has: page.locator('.slider_image') });
     this.activeFeatureCarouselSlide = this.featureCarousel.locator('.slick-slide.slick-current:not(.slick-cloned):visible, .slick-slide.slick-active:not(.slick-cloned):visible').filter({ has: page.locator('.slider_image') }).first();
@@ -168,7 +168,7 @@ export class HomePage {
     'Home',
     'Sports',
     'Movies',
-    'FREE OTTs',
+    'FREE',
     'Web Series',
   ];
 
@@ -584,7 +584,7 @@ private readonly expectedLandingTabs = [
   'Home',
   'Sports',
   'Movies',
-  'FREE OTTs',
+  'FREE',
   'Web Series',
 ];
 
@@ -701,7 +701,7 @@ async verifyLandingTabSwitching(): Promise<void> {
   const tabsToSwitch = [
     'Sports',
     'Movies',
-    'FREE OTTs',
+    'FREE',
     'Web Series',
   ];
 

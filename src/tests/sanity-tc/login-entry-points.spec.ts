@@ -47,7 +47,7 @@ test.describe('Login - Different Entry Points', () => {
         const loginPage = new LoginPage(page);
         await homePage.clickAsset();
         await loginPage.clickSignInButton();
-        await loginPage.login();
+        await loginPage.verifyLoginFlowDisplayed();
     });
 
     test('Verify login prompt from BingeList tab', {

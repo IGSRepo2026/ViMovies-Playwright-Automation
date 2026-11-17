@@ -5,6 +5,7 @@ import { HomePage } from '@ViMovies/pageObjects/HomePage';
 import { LoginPage } from '@ViMovies/pageObjects/loginPage';
 import { PlayerPage } from '@ViMovies/pageObjects/PlayerPage';
 import { SearchPage } from '@ViMovies/pageObjects/SearchPage';
+import { SearchPlaybackHelper } from '@ViMovies/pageObjects/SearchPlaybackHelper';
 
 const baseUrl = process.env.BASE_URL!;
 const playableContentTitle = process.env.PLAYABLE_CONTENT_TITLE?.trim();
@@ -30,10 +31,37 @@ test.describe('Continue Watching - Navigation', () => {
     {
       tag: ['@sanity', '@continue-watching', '@navigation'],
     },
-    async () => {
+    async ({ page }) => {
+      test.skip(
+        !playableContentTitle,
+        'PLAYABLE_CONTENT_TITLE is required to seed the Continue Watching rail',
+      );
+
+      const searchPlaybackHelper = new SearchPlaybackHelper(page);
+      const detailPage = new DetailPage(page);
+      const playerPage = new PlayerPage(page);
+
+      await searchPlaybackHelper.searchAndOpenContent(playableContentTitle!);
+      const contentTitle = await detailPage.getDetailScreenTitle();
+      await detailPage.clickWatchNowButton();
+      await playerPage.verifyPlayerVisible();
+      await playerPage.verifyPlaybackStarted();
+      await playerPage.seekToPositionReliably(50, 60);
+      await playerPage.video.evaluate((video: HTMLVideoElement) => video.pause());
+
+      await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
+      await new HomePage(page).verifyHomePageLoaded();
+      await continueWatchingPage.verifyPartiallyWatchedContentDisplayed(
+        contentTitle,
+        60000,
+      );
+
       const rail =
         await continueWatchingPage.findContinueWatchingRail();
-        await expect( rail, 'Complete Continue Watching rail should be visible').toBeVisible();
+      await expect(
+        rail,
+        'Continue Watching rail should be visible after partial playback',
+      ).toBeVisible();
     }
   );
 
@@ -117,21 +145,6 @@ test.describe('Continue Watching - Navigation', () => {
 );
 
 test(
-  'Verify Continue Watching Rail is Not Available for Guest',
-  { tag: ['@sanity', '@guest', '@continue-watching'] },
-  async ({ page }) => {
-    const homePage = new HomePage(page);
-    const continueWatchingPage = new ContinueWatchingPage(page);
-    await expect(
-      page.getByAltText('header_logo').first(),
-      'Home page should load successfully for guest user'
-    ).toBeVisible({ timeout: 30000 });
-    await homePage.verifyHomePageLoaded();
-    await continueWatchingPage.verifyContinueWatchingRailAbsentWhileScrolling();
-  },
-);
-
-test(
   'Verify 100% Watched Content Is Removed from Continue Watching Rail',
   {
     tag: ['@sanity', '@continue-watching', '@logged-in', '@completion'],
@@ -178,3 +191,19 @@ test(
 );
 
 });
+
+test(
+  'Verify Continue Watching Rail is Not Available for Guest',
+  { tag: ['@sanity', '@guest', '@continue-watching'] },
+  async ({ page }) => {
+    const homePage = new HomePage(page);
+    const continueWatchingPage = new ContinueWatchingPage(page);
+    await page.goto(baseUrl);
+    await expect(
+      page.getByAltText('header_logo').first(),
+      'Home page should load successfully for guest user'
+    ).toBeVisible({ timeout: 30000 });
+    await homePage.verifyHomePageLoaded();
+    await continueWatchingPage.verifyContinueWatchingRailAbsentWhileScrolling();
+  },
+);

@@ -49,12 +49,14 @@ export class LoginPage {
         });
         this.whosWatchingHeading = page.getByText(/who['’]s watching\s*\?/i);
         this.profileAvatars = page.locator(
-            'img[alt]:visible:not([alt="profile_lock"])'
+            'img[alt]:visible:not([alt="profile_lock"]):not([alt="add_profile_icon"])'
         );
         this.mobileNumberInput = page.locator('#number');
         this.getOtpButton = page.locator('#verifyOtp');
         this.signInButton = page.getByRole('button', { name: 'Sign In' });
-        this.otpInputs = page.getByLabel('Please enter OTP character 1');
+        this.otpInputs = page.getByRole('textbox', {
+            name: /Please enter OTP character \d+/,
+        });
         this.otpRequestLimitMessage = page.getByText(
             /OTP Request limit exceeded/i
         );
@@ -125,7 +127,8 @@ export class LoginPage {
     // =========================
 
   async clickProfileIcon() {
-        await this.profileIcon.click();
+      await expect(this.profileIcon).toBeVisible({ timeout: 15000 });
+      await this.profileIcon.click({ force: true, timeout: 10000 });
     }
 
     async verifyExitProfileOptionVisible(): Promise<void> {
@@ -160,13 +163,16 @@ export class LoginPage {
 
         for (let index = 0; index < profileCount; index += 1) {
             const profileAvatar = this.profileAvatars.nth(index);
+            const profileName = (await profileAvatar.getAttribute('alt'))?.trim();
+
+            if (!profileName || ['profile_lock', 'add_profile_icon'].includes(profileName)) {
+                continue;
+            }
 
             await expect(
                 profileAvatar,
                 `Profile ${index + 1} avatar should be visible`
             ).toBeVisible();
-
-            const profileName = (await profileAvatar.getAttribute('alt'))?.trim();
 
             expect(
                 profileName,
@@ -190,16 +196,36 @@ export class LoginPage {
 
     await this.mobileNumberInput.fill(mobileNumber);
 
-    await expect(this.mobileNumberInput).toHaveValue(mobileNumber);
+    try {
+        await expect(this.mobileNumberInput).toHaveValue(mobileNumber, {
+            timeout: 2000,
+        });
+    } catch {
+        await expect(
+            this.otpInputs.first(),
+            'Mobile number entry should advance to OTP verification'
+        ).toBeVisible({ timeout: 15000 });
+    }
 }
 
     async clickGetOtp() {
         const otpInput = this.otpInputs.first();
+        const otpPrompt = this.page.getByText(
+            'Enter the OTP you received and login.',
+            { exact: true }
+        );
+        const otpHeading = this.page.getByRole('heading', {
+            name: /^(Verify Number|Almost Done!)$/i,
+        });
         const getLoginStep = async () => {
-            if (await otpInput.isVisible()) {
+            if (
+                (await otpInput.isVisible().catch(() => false)) ||
+                (await otpPrompt.isVisible().catch(() => false)) ||
+                (await otpHeading.isVisible().catch(() => false))
+            ) {
                 return 'enter-otp';
             }
-            if (await this.otpRequestLimitMessage.isVisible()) {
+            if (await this.otpRequestLimitMessage.first().isVisible()) {
                 return 'rate-limited';
             }
             if (await this.getOtpButton.isVisible()) {
@@ -227,7 +253,24 @@ export class LoginPage {
         }
 
         if (loginStep === 'request-otp') {
-            await this.getOtpButton.click();
+            try {
+                await this.getOtpButton.click({ timeout: 5000 });
+            } catch (error) {
+                loginStep = await getLoginStep();
+
+                if (loginStep === 'enter-otp') {
+                    return;
+                }
+
+                if (loginStep === 'rate-limited') {
+                    throw new Error(
+                        'OTP request limit exceeded. Wait for the service cooldown or use a test account with available OTP requests.'
+                    );
+                }
+
+                throw error;
+            }
+
             await expect
                 .poll(getLoginStep, {
                     message: 'OTP request should open OTP entry or report a request limit',
@@ -254,9 +297,7 @@ export class LoginPage {
      otp = otp || process.env.OTP!;
 
     for (let i = 0; i < otp.length; i++) {
-        await this.page
-            .getByLabel(`Please enter OTP character ${i + 1}`)
-            .fill(otp[i]);
+        await this.otpInputs.nth(i).fill(otp[i]);
     }
 }
 

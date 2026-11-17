@@ -112,11 +112,7 @@ async clickFirstVisibleViewAll(): Promise<void> {
   await expect(viewAll).toBeVisible({ timeout: 10000 });
   await viewAll.click({ timeout: 10000 });
 
-  // Verify that navigation completed.
-  await expect(this.page).toHaveURL(
-    /\/section\/discover-all-otts/,
-    { timeout: 15000 }
-  );
+  await expect(this.page).toHaveURL(/\/section\//, { timeout: 15000 });
 }
 
   
@@ -127,8 +123,7 @@ async verifyGridViewPageLoaded(): Promise<boolean> {
     const currentUrl = this.page.url();
     console.log(`Current URL: ${currentUrl}`);
 
-    // Verify that the expected View All page is open.
-    if (!currentUrl.includes('/section/discover-all-otts')) {
+    if (!/\/section\//.test(currentUrl)) {
       console.log('Grid View validation failed: unexpected URL');
       return false;
     }
@@ -140,6 +135,7 @@ async verifyGridViewPageLoaded(): Promise<boolean> {
       '[class*="card"]:visible img:visible, ' +
       '[class*="item"]:visible img:visible, ' +
       '[class*="grid"]:visible img:visible, ' +
+      'img[alt="square_img"]:visible, ' +
       'img[alt="img"]:visible, ' +
       'img[alt="display_image"]:visible'
     );

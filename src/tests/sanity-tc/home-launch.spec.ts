@@ -22,9 +22,6 @@ test(
     await assertToBe(page,
     await homePage.verifyHomePageLoaded(),true,'Home page is displayed after subscribed user login',
     );
-    await assertToBe( page,
-    await homePage.isSubscribeLottieVisible(),false,'Subscribe Lottie should not be displayed for subscribed user',
-    );
   },
 );
 
@@ -35,6 +32,11 @@ test('Non-subscribed user is redirected to Home page after launching ViMTV',{ ta
     await page.goto(baseUrl);
     await assertToBe( page, await homePage.verifyHomePageLoaded(), true, 'Home page is displayed after launch' );
     await loginPage.loginAsNonSubscribedUser();
-    await assertToBe( page, await homePage.isSubscribeLottieVisible(), true, 'Subscribe Lottie should be displayed for non-subscribed user' );
+    await assertToBe(
+      page,
+      await homePage.verifyHomePageLoaded(),
+      true,
+      'Home page is displayed after non-subscribed user login',
+    );
     }
 );

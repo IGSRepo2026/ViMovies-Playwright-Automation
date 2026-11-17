@@ -1,8 +1,8 @@
- import { expect, test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { HomePage } from '@ViMovies/pageObjects/HomePage';
 import { LoginPage } from '@ViMovies/pageObjects/loginPage';
 import { DetailPage } from '@ViMovies/pageObjects/DetailPage';
-import { PlayerPage } from '@ViMovies/pageObjects/PlayerPage';
+ import { PlayerPage } from '@ViMovies/pageObjects/PlayerPage';
 import { SearchPage } from '@ViMovies/pageObjects/SearchPage';
 import { LiveDetailLocators } from '@ViMovies/pageObjects/LiveDetailLocators';
 

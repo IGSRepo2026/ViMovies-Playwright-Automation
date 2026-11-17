@@ -33,7 +33,7 @@ export class SearchPage {
     this.noSearchResultsMessage = page
       .getByText(/no search results found/i)
       .first();
-    this.searchIconHeader = page.locator('a').filter({ hasText: 'SEARCH' });
+    this.searchIconHeader = page.getByAltText('search_icon').first();
     this.headerLogo = page.getByAltText('header_logo').first();
     this.exploreByAppsRail = page.getByRole('heading', { name: 'Explore by Apps' });
     this.exploreByLanguageRail = page.getByRole('heading', { name: 'Explore by Language' });

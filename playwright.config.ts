@@ -25,7 +25,7 @@ export default defineConfig({
 
   use: {
     baseURL:
-      process.env.BASE_URL || 'https://preprod-moviesandtv.myvi.in ',
+      process.env.BASE_URL || 'https://preprod-moviesandtv.myvi.in',
 
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
@@ -44,5 +44,18 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
       },
     },
+    // {
+    //   name: 'firefox',
+    //   use: {
+    //     ...devices['Desktop Firefox'],
+    //   },
+    //  },
+    // {
+    //   name: 'edge',
+    //   use: {
+    //     ...devices['Desktop Edge'],
+    //     channel: 'msedge',
+    //   },
+    // },
   ],
 });
