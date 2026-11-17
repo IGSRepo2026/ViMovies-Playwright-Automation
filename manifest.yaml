@@ -1,0 +1,113 @@
+# ViMovies Automation — Function Registry (Manifest)
+#
+# This manifest is the single source of truth for all reusable automation artifacts.
+# Before creating ANY new Page Object or Common Function, READ this file first.
+# If a function already exists here → REUSE it. Do NOT duplicate.
+#
+# Structure:
+#   pageObjects: All Page Object classes with their public methods
+#   commonFunctions: All reusable functions (login, search, playback, navigation)
+
+pageObjects:
+  - id: LoginPage
+    name: Login Page
+    path: src/pageObjects/LoginPage.ts
+    class: LoginPage
+    methods:
+      - clickProfileIcon
+      - enterMobileNumber
+      - clickGetOtp
+      - enterOtp
+      - clickSubmitButton
+      - login
+    dependsOn: []
+
+  - id: SearchPage
+    name: Search Page
+    path: src/pageObjects/SearchPage.ts
+    class: SearchPage
+    methods:
+      - clickSearchIcon
+      - enterSearchText
+      - getSearchResultCount
+      - isNoResultsVisible
+      - getSearchResultText
+      - verifySearchPageLoaded
+      - isHeaderLogoVisible
+      - isSearchInputVisible
+      - isExploreByAppsVisible
+      - isExploreByLanguageVisible
+      - isExploreByGenresVisible
+      - getVisibleContentRails
+      - isSearchHistoryVisible
+      - getSearchHistoryItems
+      - clickSearchHistoryItem
+      - clearSearchInput
+      - getSearchInputValue
+      - clickOnWatchNowButton
+      - verifyAndClickAllSearchTabs
+      - clickSearchHistory
+      - clearHistory
+    dependsOn: []
+
+  - id: HomePage
+    name: Home Page
+    path: src/pageObjects/HomePage.ts
+    class: HomePage
+    methods:
+      - clickHomeTab
+      - clickSearchIcon
+      - verifyHomePageLoaded
+    dependsOn: []
+
+commonFunctions:
+  - id: executeLogin
+    name: Login with OTP
+    path: src/commonFunctions/LoginFunction.ts
+    export: executeLogin
+    inputType: LoginInput
+    outputType: LoginOutput
+    description: Logs into ViMovies using mobile number + OTP flow
+    dependsOn:
+      - LoginPage
+
+  - id: executeNavigateToSearch
+    name: Navigate to Search Page
+    path: src/commonFunctions/NavigationFunction.ts
+    export: executeNavigateToSearch
+    inputType: NavigateToSearchInput
+    outputType: NavigateToSearchOutput
+    description: Navigates to home page and clicks search icon to verify search page navigation
+    dependsOn:
+      - HomePage
+      - SearchPage
+
+  - id: executeSearch
+    name: Search Content
+    path: src/commonFunctions/SearchFunction.ts
+    export: executeSearch
+    inputType: SearchInput
+    outputType: SearchOutput
+    description: Opens search, enters text, returns result count and visibility state
+    dependsOn:
+      - SearchPage
+
+  - id: executeNavigation
+    name: Navigate to Section
+    path: src/commonFunctions/NavigationFunction.ts
+    export: executeNavigation
+    inputType: NavigationInput
+    outputType: NavigationOutput
+    description: Navigates to a specific tab/section of the app (Home, Search, My Bingelist)
+    dependsOn:
+      - HomePage
+
+  - id: executeSearchAndVerifyHistory
+    name: Search and Verify History
+    path: src/commonFunctions/SearchHistoryFunction.ts
+    export: executeSearchAndVerifyHistory
+    inputType: SearchHistoryInput
+    outputType: SearchHistoryOutput
+    description: Searches content, clicks a result, navigates back, verifies search history and autofill
+    dependsOn:
+      - SearchPage
