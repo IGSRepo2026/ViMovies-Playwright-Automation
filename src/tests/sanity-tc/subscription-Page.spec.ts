@@ -62,6 +62,8 @@ test.describe('Subscription Plans', () => {
             tag: ['@sanity', '@subscription', '@price'],
         },
         async ({ page }) => {
+            test.skip(true, 'Temporarily disabled at user request.');
+
             process.env.MOBILE_NUMBER =
                 process.env.MOBILE_NUMBER_798_PLAN!;
 

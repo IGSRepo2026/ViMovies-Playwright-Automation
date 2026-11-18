@@ -153,6 +153,8 @@ test.describe('Search — Results UI', () => {
     `${scenario.id} — ${scenario.description}`,
     { tag: ['@search'] },
     async ({ page }) => {
+      test.skip(true, 'Temporarily disabled at user request.');
+
       const searchPage = await navigateToSearchAndVerify(page, {
         baseUrl: baseUrl!,
       });
