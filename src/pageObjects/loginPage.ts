@@ -337,6 +337,35 @@ async loginAsNonSubscribedUser(): Promise<void> {
   await this.clickGetOtp();
   await this.enterOtp(otp);
   await this.clickOnSubmitButton();
+
+  const expiredDeviceLogoutMessage = this.page.getByText(
+    /allott?ed time for logging out another device has expired/i,
+  );
+  let deviceLogoutExpired = false;
+
+  try {
+    await expiredDeviceLogoutMessage.waitFor({
+      state: 'visible',
+      timeout: 5000,
+    });
+    deviceLogoutExpired = true;
+  } catch (error) {
+    if (!(error instanceof Error) || error.name !== 'TimeoutError') {
+      throw error;
+    }
+  }
+
+  if (deviceLogoutExpired) {
+    await this.page
+      .getByRole('button', { name: /login with different number/i })
+      .click();
+    await this.enterMobileNumber(mobileNumber);
+    await this.clickGetOtp();
+    await this.enterOtp(otp);
+    await this.clickOnSubmitButton();
+    await expect(expiredDeviceLogoutMessage).toBeHidden({ timeout: 15000 });
+  }
+
   await this.handleDeviceLimitIfDisplayed();
 }
     // =========================
