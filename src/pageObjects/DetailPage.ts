@@ -22,8 +22,8 @@ export class DetailPage {
       .first();
     this.detailDescription = page.locator('div[class*="description_text"]');
     this.watchNowButton = page
-  .locator('button[class*="signin_btn"]')
-  .filter({ hasText: /^\s*(Watch Now|Start Over)\s*$/i });
+  .getByRole('button', { name: /^(Watch Now|Start Over|Resume|Play)$/i })
+  .first();
     this.bingelistButton = page.getByRole('button', { name: /My Bingelist/ });
     this.partnerLogo = page.getByAltText('partner_icon');
     this.shareButton = page.locator('button[class*="share_icon"]');

@@ -25,7 +25,7 @@ export default defineConfig({
 
   use: {
     baseURL:
-      process.env.BASE_URL || 'https://preprod-moviesandtv.myvi.in',
+      process.env.BASE_URL || 'https://moviesandtv.myvi.in/',
 
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
