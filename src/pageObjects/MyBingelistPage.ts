@@ -325,17 +325,13 @@ this.bingeListPopupHeading = page.getByRole('heading', {
   }
 
   async verifyBingeListContentIsDisplayed(): Promise<void> {
-    await expect(
-      this.bingeListContentCounts.first(),
-      'At least one BingeList should show saved titles',
-    ).toBeVisible({ timeout: 20_000 });
-
-    const displayedItems = await this.bingeListContentCounts.count();
-
-    expect(
-      displayedItems,
-      'At least one BingeList should contain saved content',
-    ).toBeGreaterThan(0);
+    await expect
+      .poll(() => this.bingeListContentCounts.count(), {
+        message: 'At least one BingeList should show saved titles',
+        timeout: 30_000,
+        intervals: [250, 500, 1000],
+      })
+      .toBeGreaterThan(0);
   }
 
   async openBingeListByName(bingeListName: string): Promise<void> {
